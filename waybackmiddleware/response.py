@@ -37,13 +37,13 @@ class WaybackMachineResponse(scrapy.http.HtmlResponse):
         self._client = client
         super().__init__(
             request.url,
-            body=self._memento.text,
-            encoding=self._memento.encoding,
-            status=self._memento.status_code,
+            body="" if self._memento is None else self._memento.text,
+            encoding="utf8" if self._memento is None else self._memento.encoding,
+            status=http.HTTPStatus.NOT_FOUND if self._memento is None else self._memento.status_code,
             request=request,
         )
         self.original_response = response
-        self.timestamp = self._memento.timestamp
+        self.timestamp = None if self._memento is None else self._memento.timestamp
 
     def earlier_response(self) -> typing.Optional[typing.Any]:
         """Fetch the response earlier than this."""
