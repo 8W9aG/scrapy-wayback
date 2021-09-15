@@ -25,7 +25,7 @@ class WaybackMachineDownloaderMiddleware:
                     return wayback_response
             if not wayback_proxy_fallthrough_enabled:
                 raise scrapy.exceptions.IgnoreRequest("Could not find URL on wayback machine")
-        return request
+        return None
 
     def process_response(self, request, response, spider):
         fallback_enabled = request.meta.get("wayback_machine_fallback_enabled", spider.settings.get("WAYBACK_MACHINE_FALLBACK_ENABLED", True))
