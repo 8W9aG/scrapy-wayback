@@ -1,0 +1,2 @@
+scrapy>=2.5.0
+wayback>=0.3.0
