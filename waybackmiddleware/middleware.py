@@ -12,11 +12,13 @@ class WaybackMachineDownloaderMiddleware:
 
     @classmethod
     def from_crawler(cls, crawler):
+        print("from_crawler")
         s = cls()
         crawler.signals.connect(s.spider_opened, signal=scrapy.signals.spider_opened)
         return s
 
     def process_request(self, request, spider):
+        print("process_request")
         wayback_proxy_enabled = request.meta.get("wayback_machine_proxy_enabled", spider.settings.get("WAYBACK_MACHINE_PROXY_ENABLED", False))
         wayback_proxy_fallthrough_enabled = request.meta.get("wayback_machine_proxy_fallthrough_enabled", spider.settings.get("WAYBACK_MACHINE_PROXY_FALLTHROUGH_ENABLED", True))
         if wayback_proxy_enabled and request.method == "GET":
@@ -28,6 +30,7 @@ class WaybackMachineDownloaderMiddleware:
         return request
 
     def process_response(self, request, response, spider):
+        print("process_response")
         fallback_enabled = request.meta.get("wayback_machine_fallback_enabled", spider.settings.get("WAYBACK_MACHINE_FALLBACK_ENABLED", True))
         if not fallback_enabled:
             return response
@@ -38,4 +41,5 @@ class WaybackMachineDownloaderMiddleware:
         return response
 
     def spider_opened(self, spider):
+        print("spider_opened")
         self.client = wayback.WaybackClient()
