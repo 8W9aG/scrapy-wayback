@@ -11,13 +11,16 @@ def find_memento(
     client: wayback.WaybackClient
 ) -> typing.Tuple[typing.Optional[wayback.Memento], typing.Optional[str]]:
     """Finds the latest valid memento in the records."""
-    for record in records:
-        try:
-            memento = client.get_memento(record, mode=wayback.Mode.original)
-            if memento.status_code == http.HTTPStatus.OK:
-                return memento, record
-        except wayback.exceptions.MementoPlaybackError:
-            pass
+    try:
+        for record in records:
+            try:
+                memento = client.get_memento(record, mode=wayback.Mode.original)
+                if memento.status_code == http.HTTPStatus.OK:
+                    return memento, record
+            except wayback.exceptions.MementoPlaybackError:
+                pass
+    except wayback.exceptions.BlockedSiteError:
+        pass
     return None, None
 
 
