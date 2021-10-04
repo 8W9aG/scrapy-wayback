@@ -5,6 +5,7 @@ import scrapy
 import wayback
 
 from .response import WaybackMachineResponse
+from .request import WaybackMachineRequest
 
 
 class WaybackMachineDownloaderMiddleware:
@@ -16,11 +17,17 @@ class WaybackMachineDownloaderMiddleware:
         return s
 
     def process_request(self, request, spider):
+        if isinstance(request, WaybackMachineRequest):
+            response = request._response
+            if response is None:
+                search_urls = list(self.client.search(request.url))
+                response = WaybackMachineResponse(request, search_urls, None, self.client)
+            return response
         wayback_proxy_enabled = request.meta.get("wayback_machine_proxy_enabled", spider.settings.get("WAYBACK_MACHINE_PROXY_ENABLED", False))
         wayback_proxy_fallthrough_enabled = request.meta.get("wayback_machine_proxy_fallthrough_enabled", spider.settings.get("WAYBACK_MACHINE_PROXY_FALLTHROUGH_ENABLED", True))
         if wayback_proxy_enabled:
             if request.method == "GET":
-                wayback_response = WaybackMachineResponse(request, self.client.search(request.url), None, self.client)
+                wayback_response = WaybackMachineResponse(request, list(self.client.search(request.url)), None, self.client)
                 if wayback_response.is_valid():
                     return wayback_response
             if not wayback_proxy_fallthrough_enabled:
@@ -32,7 +39,7 @@ class WaybackMachineDownloaderMiddleware:
         if not fallback_enabled:
             return response
         if response.status >= http.HTTPStatus.BAD_REQUEST and request.method == "GET":
-            wayback_response = WaybackMachineResponse(request, self.client.search(request.url), response, self.client)
+            wayback_response = WaybackMachineResponse(request, list(self.client.search(request.url)), response, self.client)
             if wayback_response.is_valid():
                 return wayback_response
         return response

@@ -5,6 +5,8 @@ import http
 import scrapy
 import wayback
 
+from .request import WaybackMachineRequest
+
 
 def find_memento(
     records: typing.List[str],
@@ -64,3 +66,11 @@ class WaybackMachineResponse(scrapy.http.HtmlResponse):
     def is_valid(self) -> bool:
         """Whether the response is valid."""
         return self._memento is not None
+
+    def request_for_response(self, callback: typing.Callable) -> WaybackMachineRequest:
+        """Generate a wayback machine request for the response."""
+        return WaybackMachineRequest(
+            self.request.url,
+            self,
+            callback=callback
+        )

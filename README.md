@@ -75,6 +75,28 @@ def parse(self, response):
 
 This will allow you to go through the history one by one to get the earlier snapshots of the page. If you are interested in the response that the wayback middleware recovered, use the `original_response` attribute.
 
+In order to perform a request that will yield the whole archived contents of a site, you can do the following:
+
+```py
+import scrapy
+from waybackmiddleware.request import WaybackMachineRequest
+from waybackmiddleware.response import WaybackMachineResponse
+
+
+class ArchiveScraper(scrapy.Spider):
+    def start_requests():
+        yield WaybackMachineRequest("http://www.walmart.com")
+    
+    def parse(self, response):
+        print(f"Archive of {response.url} at {response.timestamp}")
+        if isinstance(response, WaybackMachineResponse):
+            next_response = response.earlier_response()
+            if next_response is not None:
+                yield next_response.request_for_response()
+```
+
+This will send all archived contents of `walmart.com` to the `parse` callback (called multiple times).
+
 ## License :memo:
 
 The project is available under the [MIT License](LICENSE).
