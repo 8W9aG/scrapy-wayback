@@ -9,7 +9,7 @@ Scrapy middleware with wayback machine support for more robust scrapers.
 ## Dependencies :globe_with_meridians:
 
 * [Python 3.7](https://www.python.org/downloads/release/python-370/)
-* [Scrapy 2.5.0](https://scrapy.org/)
+* [Scrapy 2.4.0](https://scrapy.org/)
 * [Wayback 0.3.0](https://pypi.org/project/wayback/)
 
 ## Installation :inbox_tray:
@@ -92,7 +92,7 @@ class ArchiveScraper(scrapy.Spider):
         if isinstance(response, WaybackMachineResponse):
             next_response = response.earlier_response()
             if next_response is not None:
-                yield next_response.request_for_response()
+                yield next_response.request_for_response(self.parse)
 ```
 
 This will send all archived contents of `walmart.com` to the `parse` callback (called multiple times).

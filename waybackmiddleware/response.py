@@ -74,3 +74,7 @@ class WaybackMachineResponse(scrapy.http.HtmlResponse):
             self,
             callback=callback
         )
+
+    def wayback_url(self) -> str:
+        """Fetch the wayback URL for the response."""
+        return self._memento.memento_url
