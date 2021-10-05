@@ -41,7 +41,7 @@ class WaybackMachineResponse(scrapy.http.HtmlResponse):
         self._records = records
         self._client = client
         super().__init__(
-            request.url,
+            memento.url,
             body="" if self._memento is None else self._memento.text,
             encoding="utf8" if self._memento is None else self._memento.encoding,
             status=http.HTTPStatus.NOT_FOUND if self._memento is None else self._memento.status_code,
