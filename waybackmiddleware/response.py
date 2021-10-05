@@ -9,7 +9,7 @@ from .request import WaybackMachineRequest
 
 
 def find_memento(
-    records: typing.List[str],
+    records: typing.Iterator[wayback.CdxRecord],
     client: wayback.WaybackClient
 ) -> typing.Tuple[typing.Optional[wayback.Memento], typing.Optional[str]]:
     """Finds the latest valid memento in the records."""
@@ -31,7 +31,7 @@ class WaybackMachineResponse(scrapy.http.HtmlResponse):
     def __init__(
         self,
         request: scrapy.Request,
-        records: typing.List[str],
+        records: typing.Iterator[wayback.CdxRecord],
         response: typing.Optional[scrapy.http.Response],
         client: wayback.WaybackClient
     ) -> None:
@@ -52,10 +52,9 @@ class WaybackMachineResponse(scrapy.http.HtmlResponse):
 
     def earlier_response(self) -> typing.Optional[typing.Any]:
         """Fetch the response earlier than this."""
-        earlier_records = self._records[self._records.index(self._record) + 1:]
         response = WaybackMachineResponse(
             self.request,
-            earlier_records,
+            self._records,
             self.original_response,
             self._client
         )
