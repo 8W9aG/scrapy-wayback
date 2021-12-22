@@ -6,7 +6,6 @@ import scrapy
 import wayback
 
 from .request import WaybackMachineRequest
-from .norecordsexception import NoRecordsException
 
 
 def find_memento(
