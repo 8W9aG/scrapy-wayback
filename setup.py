@@ -23,7 +23,7 @@ def install_requires() -> typing.List[str]:
 
 setup(
     name='scrapy-wayback',
-    version='1.0.7',
+    version='1.0.8',
     description='Scrapy middleware with wayback machine support for more robust scrapers.',
     long_description=long_description,
     long_description_content_type='text/markdown',
